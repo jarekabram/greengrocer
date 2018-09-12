@@ -7,7 +7,7 @@ class Vegetable : public Item
 {
 
 public:
-	Vegetable(int id, std::string itemName, double price, double weight);
+	Vegetable(int id, std::string itemName, double price);
 	virtual ~Vegetable();
 	virtual std::string toString() override;
 };

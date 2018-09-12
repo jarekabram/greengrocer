@@ -1,6 +1,6 @@
 #include <FileManager.h>
 
-FileManager::FileManager(std::string filename)
+FileManager::FileManager(string filename)
 {
 	m_filename = filename;
 }
@@ -8,99 +8,192 @@ FileManager::~FileManager()
 {
 }
 
-int FileManager::addNewProduct()
+void FileManager::calculateItems()
 {
-	int result;
-	std::string category;
-	std::cout << "Which category would be a product? (fruit or vegetable)" << std::endl;
+	bool flag = true;
+	std::vector<std::shared_ptr<Item>> basket;
+	cout << "Please insert products by ID" << endl;
 
-	std::cin >> category;
+	double purchase = 0.0;
+	while(flag)
+	{
+		cout << "Actual purchase:" << purchase << endl;
+
+		int id;
+		double quantity;
+		cout << "ID" << endl;
+		cin >> id; cin.clear();
+
+		if(!isProductAlreadyAdded(id))
+		{
+			cerr << "Product with given id was not already added, please add product and then try again" << endl;
+			return;
+		}
+
+		cout << "Quantity:" << endl;
+		cin >> quantity; cin.clear();
+
+		for(auto it : m_items){
+			if(id == it->getId())
+			{
+				it->setWeight(quantity);
+				basket.emplace_back(it);
+				purchase += it->getPrice()*quantity;
+			}
+		}
+
+		cout << "Add another Item? (y/n)" << endl;
+
+		char itemKey;
+		cin >> itemKey; cin.clear();
+
+		if(itemKey == 'y')
+		{
+			cout << "Please insert next Product ID" << endl;
+		}
+		else if(itemKey == 'n')
+		{
+			printCheck(purchase, basket);
+			flag = false;
+		}
+		else
+		{
+			cerr << "You typed wrong rolling back transaction";
+			flag = false;
+			break;
+		}
+	}
+}
+
+void FileManager::addNewProduct()
+{
+	string category;
+	cout << "Which category would be a product? (fruit or vegetable)" << endl;
+
+	cin >> category; cin.clear();
 
 	if(category == "fruit")
 	{
-		std::cout << "Please insert parameters to add new item:" << std::endl;
+		cout << "Please insert parameters to add new item:" << endl;
 		gatherInput(category);
-//		fruits.emplace_back(Fruit(id, name, price, weight));
-
-		result = 1;
 	}
 	else if(category == "vegetable")
 	{
 		gatherInput(category);
-		result = 1;
 	}
 	else
 	{
-		std::cerr << "Wrong category, going back to menu..." << std::endl;
-		result = -1;
+		cerr << "Wrong category, going back to menu..." << endl;
+		return;
+	}
+}
+
+bool FileManager::isProductAlreadyAdded(int id)
+{
+	bool result = false;
+	for(auto it : m_items)
+	{
+		if (id == it->getId()){
+			result = true;
+		}
 	}
 	return result;
 }
 
-bool FileManager::isProduct(int id)
+int FileManager::getDataFromFile()
 {
-	return 0;
+	int result = 1;
+	m_file.open (m_filename, ifstream::in);
+	if (!m_file.is_open()) {
+	  cerr << "can't open output file" << endl;
+	  result = -1;
+	}
+	cout << "Loading objects" << endl;
+	string line;
+
+	string id;
+	string name;
+	string price;
+	string category;
+
+	try{
+		while(m_file.good())
+		{
+			getline(m_file, id, ',');
+			getline(m_file, name, ',');
+			getline(m_file, price, ',');
+			getline(m_file, category, '\n');
+
+			addItem(id, name, price, category);
+		}
+	}
+	catch(invalid_argument){
+		cerr << "Error during parsing file (products.csv) - please check if there is an enter after last line" << endl;
+		result = -1;
+	}
+
+	m_file.close();
+	return result;
 }
 
-void FileManager::getDataFromFile()
+void FileManager::gatherInput(string category)
 {
-	m_file.open (m_filename, std::ifstream::in);
-	if (!m_file.is_open()) {
-	  std::cerr << "can't open output file" << std::endl;
-	}
-	std::cout << "Loading objects" << std::endl;
-	std::string line;
+	string id;
+	string name;
+	string price;
 
-	std::string id;
-	std::string name;
-	std::string price;
-	std::string weight;
-	std::string category;
+	cout << "ID: " << endl;
+	cin >> id; cin.clear();
+	cout << "NAME: " << endl;
+	cin >> name; cin.clear();
+	cout << "PRICE: " << endl;
+	cin >> price; cin.clear();
 
-	while(m_file.good()){
-		std::getline(m_file, id, ',');
-		std::getline(m_file, name, ',');
-		std::getline(m_file, price, ',');
-		std::getline(m_file, weight, ',');
-		std::getline(m_file, category, '\n');
-
-		if(category == "fruit"){
-			fruits.emplace_back(Fruit(std::stoi(id), name, std::stod(price), std::stod(weight)));
-		}
-		if(category == "vegetable"){
-			vegetables.emplace_back(Vegetable(std::stoi(id), name, std::stod(price), std::stod(weight)));
+	if (!isProductAlreadyAdded(stoi(id)))
+	{
+		m_file.open (m_filename, fstream::app);
+		if (!m_file.is_open()) {
+		  cerr << "can't open output file" << endl;
 		}
 
+		addItem(id, name, price, category);
+
+		m_file << "\n";
+		m_file << id << "," <<
+				  name << "," <<
+				  price << "," <<
+				  category;
+		m_file.close();
 	}
-	m_file.close();
+	else
+	{
+		cerr << "Product with given id was already added, please add product with another id" << endl;
+		return;
+	}
 }
 
-void FileManager::gatherInput(std::string category){
+void FileManager::printCheck(double purchase, std::vector<std::shared_ptr<Item>> basket)
+{
+	cout << "All items added - printing check" << endl;
+	cout << "===============================" << endl;
+	cout << "PRODUCT" << "\t\t\t" << "TOTAL PRICE" << endl;
+	for(auto it : basket)
+	{
+		cout << it->getItemName() << "\t\t\t" << it->getWeight() << "*"<< it->getPrice() << "zl" << endl;
 
-	m_file.open (m_filename, std::fstream::app);
-	if (!m_file.is_open()) {
-	  std::cerr << "can't open output file" << std::endl;
 	}
-	int id;
-	std::string name;
-	double price;
-	double weight;
+	cout << "Total purchase: " << purchase << " zl" << endl;
+	cout << "===============================" << endl;
+}
 
-	std::cout << "ID: " << std::endl;
-	std::cin >> id;
-	std::cout << "NAME: " << std::endl;
-	std::cin >> name;
-	std::cout << "PRICE: " << std::endl;
-	std::cin >> price;
-	std::cout << "WEIGHT: " << std::endl;
-	std::cin >> weight;
-
-//	m_file << "\n";
-	m_file << id << "," <<
-			  name << "," <<
-			  price << "," <<
-			  weight << "," <<
-			  category << "\n";
-	m_file.close();
-
+void FileManager::addItem(string id, string name, string price, string category)
+{
+	if(category == "fruit")
+	{
+		m_items.emplace_back(make_shared<Fruit>(stoi(id), name, stod(price)));
+	}
+	else if(category == "vegetable")
+	{
+		m_items.emplace_back(make_shared<Vegetable>(stoi(id), name, stod(price)));
+	}
 }

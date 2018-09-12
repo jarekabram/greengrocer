@@ -1,10 +1,9 @@
 #include <sstream>
 #include <Fruit.h>
 
-Fruit::Fruit(int id, std::string itemName, double price, double weight){
+Fruit::Fruit(int id, std::string itemName, double price){
 	this->setId(id);
 	this->setPrice(price);
-	this->setWeight(weight);
 	this->setItemName(itemName);
 	this->setCategory("vegetable");
 }
@@ -17,7 +16,6 @@ std::string Fruit::toString()
 	std::ostringstream oss;
 	oss << 	"ID: " << std::to_string(this->getId())<< "\n" <<
 			"NAME: " << this->getItemName() << "\n" <<
-			"PRICE: " << std::to_string(this->getPrice()) << "\n" <<
-			"WEIGHT: " << std::to_string(this->getWeight());;
+			"PRICE: " << std::to_string(this->getPrice()) << "\n";
 	return oss.str();
 }

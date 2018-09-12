@@ -1,14 +1,17 @@
 #include <FileManager.h>
 #include <iostream>
 
-using namespace std;
-
 int main(int argc, char** argv)
 {
-	FileManager *fm = new FileManager("products.csv");
-	fm->getDataFromFile();
+	FileManager* fm = new FileManager("products.csv");
+	if(fm->getDataFromFile() == -1)
+	{
+		cerr << "There was an error during opening or parsing file closing program" << endl;
+		return 0;
+	}
 
-	cout << "Welcome to cash register, what do you want to do? "<< endl << "Type a number:" << endl;
+	cout << "Welcome to cash register, what do you want to do? "<< endl <<
+			"Type a number:" << endl;
 	bool finish = true;
 
 	while(finish)
@@ -18,11 +21,12 @@ int main(int argc, char** argv)
 		cout << "2. Add new Product" << endl;
 		cout << "3. Finish program" << endl;
 		cout << "4. Show Products" << endl;
-		cin >> key;
+
+		cin >> key; cin.clear();
 		switch(key)
 		{
 		case '1':
-			cout << key << endl;
+			fm->calculateItems();
 			break;
 		case '2':
 			fm->addNewProduct();
@@ -32,17 +36,13 @@ int main(int argc, char** argv)
 			cout << "Ending program" << endl;
 			break;
 		case '4':
-			for(auto fruit : fm->fruits)
+			for(auto item : fm->m_items)
 			{
-				cout << fruit.toString() << endl;
-			}
-			for(auto veg : fm->vegetables)
-			{
-				cout << veg.toString() << endl;
+				cout << item->toString() << endl;
 			}
 			break;
 		default:
-			cerr << "you have typed wrong key please enter once more" << endl;
+			cerr << "You have typed wrong key please enter once more" << endl;
 			break;
 		}
 	}
