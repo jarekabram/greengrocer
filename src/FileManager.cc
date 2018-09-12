@@ -1,4 +1,5 @@
-#include <FileManager.h>
+#include "FileManager.h"
+//#include "Scale.h"
 
 FileManager::FileManager(string filename)
 {
@@ -21,6 +22,10 @@ void FileManager::calculateItems()
 
 		int id;
 		double quantity;
+
+		//For future use
+		// Scale s;
+		// quantity = s.getWeight();
 		cout << "ID" << endl;
 		cin >> id; cin.clear();
 
@@ -32,7 +37,6 @@ void FileManager::calculateItems()
 
 		cout << "Quantity:" << endl;
 		cin >> quantity; cin.clear();
-
 		for(auto it : m_items){
 			if(id == it->getId())
 			{
@@ -58,7 +62,7 @@ void FileManager::calculateItems()
 		}
 		else
 		{
-			cerr << "You typed wrong rolling back transaction";
+			cerr << "You typed wrong key rolling back transaction";
 			flag = false;
 			break;
 		}

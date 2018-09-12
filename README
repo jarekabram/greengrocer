@@ -1,0 +1,30 @@
+PROJEKT KASY FINSKALNEJ DLA SKLEPU WARZYWNEGO
+
+Obsluga programu:
+
+1. Wlaczenie programu greengrocer.exe
+2. Program laduje plik .csv, a nastepnie wszystkie elementy z tego pliku umieszcza w kontenerze std::vector na potrzeby programu
+3. W programie znajduje sie menu, w ktorym wybieramy opcje ktora nas interesuje
+	"Serve the customer" - 	obsluga klienta, ta opcja pozwala nam wybierac produkty 
+							podajemy: 
+							- ID (liczba calkowita)
+							- ilosc (liczbe wymierna)
+							Po podaniu wszystkich interesujacych nas produktow wypisuje paragon
+	"Add new Product"	-	dodajemy nowy produkt, w tym celu musimy wybrac jedna z kategorii 
+							fruit/vegetable (owoc/warzywo) a po tym podajemy nastepujace parametry:
+							- ID (liczba calkowita)
+							- nazwa produktu (ciag znakow)
+							- cena produktu za kilogram (liczba wymierna)
+	"Finish program"	- konczy program
+	"Show Products"		- pokazuje dostepne produkty
+
+Program zachowuje podstawy programowania obiektowego
+Abstrakcja - Klasy Fruit oraz Vegetable które bazuja na wlasnosciach klasy Item
+Dziedziczenie - Klasy Fruit oraz Vegetable dzidzicza z klasy Item korzystajac tez z jej zasobow
+Hermetyzacja - Wszystkie klasy w obrebie projektu posiadaja modyfikatory dostepu, ktore ograniczaja 
+				dostepnosc korzystania z jej zasobow lub pozwalajaca na korzystanie z niezbednych funkcji lub pol
+Polimorfizm - w projekcie zostal utworzony std::vector ktory posiada wszystkie elementy zarowno z klasy Fruit jak i Vegetable 
+				za posrednictwem klasy Item
+
+Dla przyszlych rozwiazan zostala wprowadzona klasa Scales, ktora bedzie odpowiadac za komunikacje z waga. 
+Waga bedzie zbierac informacje, ktore beda przesylane do FileManagera i nastepnie w wyniku bedziemy wiedzieli jaka bedzie waga naszego produktu.
