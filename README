@@ -1,30 +1,42 @@
-PROJEKT KASY FINSKALNEJ DLA SKLEPU WARZYWNEGO
+CASH REGISTER FOR GREENGROCER
 
-Obsluga programu:
+User Manual:
+This program is a console overview of a simple cash register. The point of that program is to present 
+basic OOP concepts, which will be used inside the program:
 
-1. Wlaczenie programu greengrocer.exe
-2. Program laduje plik .csv, a nastepnie wszystkie elementy z tego pliku umieszcza w kontenerze std::vector na potrzeby programu
-3. W programie znajduje sie menu, w ktorym wybieramy opcje ktora nas interesuje
-	"Serve the customer" - 	obsluga klienta, ta opcja pozwala nam wybierac produkty 
-							podajemy: 
-							- ID (liczba calkowita)
-							- ilosc (liczbe wymierna)
-							Po podaniu wszystkich interesujacych nas produktow wypisuje paragon
-	"Add new Product"	-	dodajemy nowy produkt, w tym celu musimy wybrac jedna z kategorii 
-							fruit/vegetable (owoc/warzywo) a po tym podajemy nastepujace parametry:
-							- ID (liczba calkowita)
-							- nazwa produktu (ciag znakow)
-							- cena produktu za kilogram (liczba wymierna)
-	"Finish program"	- konczy program
-	"Show Products"		- pokazuje dostepne produkty
+	Abstraction   - Fruit and Vegetable class are using Item class basis
+	Inheritance   - Fruit and Vegetable are inheriting class Item so that those are using it's fields
+	Hermetization - All classes contains access modifiers which restricts class memebers from direct use - depending on the situation -
+					accessing to the fields is possible through get/set methods
+	Polimorphism - As an example there was added a std::vector object, which contains all Items (Fruits and Vegetables)
 
-Program zachowuje podstawy programowania obiektowego
-Abstrakcja - Klasy Fruit oraz Vegetable które bazuja na wlasnosciach klasy Item
-Dziedziczenie - Klasy Fruit oraz Vegetable dzidzicza z klasy Item korzystajac tez z jej zasobow
-Hermetyzacja - Wszystkie klasy w obrebie projektu posiadaja modyfikatory dostepu, ktore ograniczaja 
-				dostepnosc korzystania z jej zasobow lub pozwalajaca na korzystanie z niezbednych funkcji lub pol
-Polimorfizm - w projekcie zostal utworzony std::vector ktory posiada wszystkie elementy zarowno z klasy Fruit jak i Vegetable 
-				za posrednictwem klasy Item
+SOLID principle is also the part of this little project:
+S 	Single responsibility principle - each class in te program is responsible for one action, like FileManager (csv file modifications)
+O	Open/closed principle 			- Item/Fruit/Vegetable classes are having all needed parameters, but in future can be added new ones. 
+L	Liskov substitution principle 	- std:;vector contains variable size of Item's without specific knowledge which is eithr Fruit or Vegetable
+I	Interface segregation principle - in example program there are classes related with data objects, so there was no such way to introduce it.
+									  But as an example FileManager can be used for various formats, so in future an interface can be added, just
+									  to separate each subclass to manipulate different file types (just an idea)
+D	Dependency inversion principle  - The last one is almost not added to the project but for example in future some Fruit/Vegetable controller can be introduced.
+									  Fruit/Vegetable can be controlled, but there should be a dependency between Fruit/Vegetable and controller, so for example the constructor
+									  of the controller can contain the base Item type.
 
-Dla przyszlych rozwiazan zostala wprowadzona klasa Scales, ktora bedzie odpowiadac za komunikacje z waga. 
-Waga bedzie zbierac informacje, ktore beda przesylane do FileManagera i nastepnie w wyniku bedziemy wiedzieli jaka bedzie waga naszego produktu.
+How to use:
+1. build the program
+2. run the program executable
+3. Program loads a .csv file, and secondly the data from it is stored inside std::vector for further usage.
+
+After executing tha program, menu will popup:
+	"Serve the customer" - 	Serving the customer, this option allows to choose the products by it's ID
+							- ID (integer)
+							- quantity (float)
+							After providing all producrs, then receipe is printed
+	"Add new Product"	-	Adding new item (fruit/vegetable) to the list of products. The parameters that should be provided
+							- ID (integer)
+							- name of product (string)
+							- price of the item for one kilogram (float)
+	"Finish program"	- ends the program
+	"Show Products"		- shows available products
+
+NOTE:
+For future use, there was class introduced class Scales which will be responsible for comminication with physical scale.
